@@ -1,0 +1,17 @@
+{
+	"httpPort": 9000,
+	"httpsPort": 9001,
+	"proxies": [{
+		"from": "http://localhost:9000",
+		"target": "http://localhost:8080"
+	}, {
+		"from": "https://localhost:9001",
+		"target": "http://localhost:8080",
+		"https": {
+			"key": "path/to/key",
+			"cert": "path/to/cert"
+		}
+	}],
+	"notFoundMessage": "404 not found",
+	"errorMessage": "An error occurred, please try again"
+}
