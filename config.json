@@ -12,6 +12,10 @@
 			"cert": "path/to/cert"
 		}
 	}],
+	"redirects": [{
+		"from": "http://www.example.com",
+		"target": "http://example.com"
+	}],
 	"notFoundMessage": "404 not found",
 	"errorMessage": "An error occurred, please try again"
 }

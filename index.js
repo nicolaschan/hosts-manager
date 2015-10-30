@@ -22,6 +22,17 @@ var getProxyTarget = function(url) {
 
 	return null;
 };
+var getRedirectTarget = function(url) {
+	for (var i in config.redirects) {
+		var redirect = config.redirects[i];
+
+		if (redirect.from === url) {
+			return redirect.target;
+		}
+	}
+
+	return null;
+}
 
 var handleRequest = function(protocol, req, res) {
 	var from = protocol + '://' + req.headers.host;
@@ -29,16 +40,26 @@ var handleRequest = function(protocol, req, res) {
 	if (proxyTarget !== null) {
 		logger.info(from + ' -> ' + proxyTarget);
 
-		proxyServer.web(req, res, {
+		return proxyServer.web(req, res, {
 			target: proxyTarget
 		});
-		return null;
-	} else {
-		res.writeHead(404, {
-			'Content-Type': 'text/plain'
-		});
-		res.end(config.notFoundMessage);
 	}
+
+	var redirectTarget = getRedirectTarget(from);
+	if (redirectTarget !== null) {
+		logger.info(from + ' ->> ' + redirectTarget);
+
+		res.writeHead(302, {
+			Location: redirectTarget
+		});
+		return res.end();
+	}
+
+	res.writeHead(404, {
+		'Content-Type': 'text/plain'
+	});
+	return res.end(config.notFoundMessage);
+
 };
 
 var proxyServer = httpProxy.createProxyServer({});
